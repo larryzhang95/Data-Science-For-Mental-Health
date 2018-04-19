@@ -10,7 +10,7 @@ Dr. Reza Ghomi with UW DigiPsych Laboratory: For allowing me to pursue research 
 
 Current Work in Progress:
 
-- Developing Neural Network Model with Grid Search using Keras and SKLearn<br \>
-- Extracting MRMR Feature Embeddings<br \>
-- Extracting geMaps Feature Embeddings<br \>
+- Developing Neural Network Model with Grid Search using Keras and SKLearn
+- Extracting MRMR Feature Embeddings
+- Extracting geMaps Feature Embeddings
 - Generalizing SVM Model
