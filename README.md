@@ -3,9 +3,15 @@ Open Source Repository for code and programs I am developing for research in the
 
 Pipeline and Feature Extractions used for Mental Health/Computational Neuroscience Research
 
+Please Run the following curl command to get checkpoint file.
+curl -O https://storage.googleapis.com/audioset/vggish_model.ckpt
+
 Key Contributions:
 - model.py: contains all function(s) for acquiring/extracting data, flattening data, and applying data to model(s)
 - feature_embeddings.py: contains all function(s) for extracting audio feature(s)
+- example_demo.py: Example code to run on top of
+- bipolar: example data from youtube audio to test out example_demo.py
+- data.p: pickled preloaded data.
 
 Credits to:
 Google AudioSet: VGGish Model for Audio Feature Embeddings (see Vggish<insert name>.Py Files)<br />
@@ -16,7 +22,7 @@ Current Work in Progress:
 
 - Extracting MRMR Feature Embeddings
 - Extracting geMaps Feature Embeddings
-- Creating example demo for Bipolar Disorder. Will Be used for NeuroLex Demo
+
 
 Future Work:
 - Add in NLP Model(s) in parallel to to Voice/Audio Model(s)

@@ -12,6 +12,7 @@ import numpy as np
 import six
 import tensorflow as tf
 import pickle
+
 """
 Feature Embeddings extracted from wavFiles for purpose of cross comparison and building models on top of feature(s)
 """
@@ -34,30 +35,10 @@ def getAudioSet(wavFile,param_np,tfrFile,cpkt):
         embedding_tensor = sess.graph.get_tensor_by_name(vggish_params.OUTPUT_TENSOR_NAME)
         #Inference + Post Processing:
         [embedding_batch] = sess.run([embedding_tensor], feed_dict={features_tensor: ex_batch})
-        print(embedding_batch)
         ppc_batch = pproc.postprocess(embedding_batch)
-        print(ppc_batch)
-        seq_example = tf.train.SequenceExample(
-            feature_lists=tf.train.FeatureLists(
-                feature_list={
-                    vggish_params.AUDIO_EMBEDDING_FEATURE_NAME:
-                        tf.train.FeatureList(
-                            feature=[
-                                tf.train.Feature(
-                                    bytes_list=tf.train.BytesList(
-                                        value=[embedding.tobytes()]))
-                                for embedding in ppc_batch
-                            ]
-                        )
-                }
-            )
-        )
-        print(seq_example)
-        if writer:
-            writer.write(seq_example.SerializeToString())
-            writer.close()
+
     ppc_batch = np.array(ppc_batch)
-    return seq_example,ppc_batch
+    return ppc_batch
 
 def getMRMR(wavFile):
     print("TODO: MRMR Implementation/Conversion from MATLAB in progress")
