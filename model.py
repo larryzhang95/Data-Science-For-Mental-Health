@@ -1,6 +1,7 @@
 from feature_embeddings import getAudioSet
 from __future__ import print_function
 import os
+import sys
 
 from scipy.io import wavfile
 import pandas as pd
@@ -35,6 +36,7 @@ def getAllData(dir):
         audio = os.path.join(dir,wavFile)
         seq, ppc_batch = getAudioSet(audio,pca_param_np,None,vggish_cpkt)
         embeddingsList.append(ppc_batch)
+    embeddingsList = np.array(embeddingsList)
     return embeddingsList
 
 #Pickle Functions For Saving and Retrieving Data:
@@ -58,18 +60,29 @@ def getVarEmbedding(embedding):
     embedding= np.array(embedding)
     return embedding.var(axis=0)
 
+def getEmbedding(data_vec,flag):
+    data_embedded = np.empty(len(data_vec),data_vec.shape[2])
+    c = 0
+    for embedding in data_vec:
+        if flag == 0:
+            e = getMeanEmbedding(embedding)
+        if flag == 1:
+            e = getMinEmbedding(embedding)
+        if flag == 2:
+            e = getMaxEmbedding(embedding)
+        if flag == 3:
+            e = getVarEmbedding(embedding)
+        else:
+            print("Incorrect Flag")
+            sys.exit()
+        d[c] = e
+        c += 1
+     return data_embedded
+
+
 #Example Model(s)
-def build_svm_model(data):
-    print("TODO: Generalize Method to accomodate all data parameters")
-    # label = abNormalData().label.tolist()
-    # print(label)
-    # d = np.empty([len(data),128])
-    # c = 0
-    # for embedding in data:
-    #     e = getMinEmbedding(embedding)
-    #     d[c] = e
-    #     c += 1
-    X_train, X_test, y_train, y_test = train_test_split(d,label,test_size=0.5)
+def build_svm_model(data_embedded,label):
+    X_train, X_test, y_train, y_test = train_test_split(data_embedded,label,test_size=0.5)
     print(len(X_train),len(y_train))
     print(len(X_test),len(y_test))
     tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
@@ -96,5 +109,17 @@ def nn_model():
     model.compile(loss='mse',metrics=['accuracy'], optimizer='adam')
     return model
 
-def build_neural_work():
-    print("TODO: Implement Neural Network")
+def build_neural_work(data_embedded, label):
+    X_train, X_test, y_train, y_test = train_test_split(data_embedded,label,test_size=0.5)
+    tuned_parameters = [{"epochs":[10,100],
+                             "batch_size":[32,64,128,256]}]
+    model = KerasClassifier(build_fn = nn_model, verbose = 0)
+    clf = GridSearchCV(estimator=model,param_grid=tuned_parameters)
+    clf.fit(X_train,y_train)
+    print("Best parameters set found on development set:")
+    print()
+    print(grid_result.best_params_)
+    preds = grid_result.predict(X_test)
+    accuracy = np.mean(preds == y_test)
+    print(accuracy)
+    return accuracy
